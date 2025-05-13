@@ -23,9 +23,9 @@ jobs:
         run: |
           curl -Lo $RUNNER_TEMP/sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64
           chmod +x $RUNNER_TEMP/sbom-tool
-          $RUNNER_TEMP/sbom-tool generate -b ./target -bc . -pn MyMavenProject -pv 1.0.0 -ps MyCompany -nsb https://sbom.mycompany.com -V Verbose
+          $RUNNER_TEMP/sbom-tool generate -b ./config -bc . -pn Webgoat -pv 1.0.0 -ps Philips_test -nsb https://sbom.philips.com -V Verbose
 
       - name: Upload SBOM Artifact
         uses: actions/upload-artifact@v4
         with:
-          path: target
+          path: config
