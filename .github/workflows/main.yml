@@ -1,0 +1,48 @@
+name: Generate SBOM for Java Project
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger the workflow on pull request to the main branch
+
+jobs:
+  generate-sbom:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu image
+
+    steps:
+    # Step 1: Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Step 2: Set up Java (Maven) environment
+    - name: Set up Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'  # Specify the Java version you want to use
+        distribution: 'adoptopenjdk'
+
+    # Step 3: Install Maven (if necessary)
+    - name: Install Maven
+      run: sudo apt-get install -y maven
+
+    # Step 4: Build the Java project using Maven (or Gradle, if applicable)
+    - name: Build with Maven
+      run: mvn clean install  # Build your project (adjust if you use Gradle or other build systems)
+
+    # Step 5: Install Microsoft SBOM Tool
+    - name: Install Microsoft SBOM Tool
+      run: npm install -g @microsoft/sbom-tool
+
+    # Step 6: Generate SBOM for the Java project
+    - name: Generate SBOM
+      run: sbom --input-directory . --output sbom.json --format json --build-system maven
+
+    # Step 7: Upload the generated SBOM as an artifact
+    - name: Upload SBOM as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: sbom-json
+        path: sbom.json  # Path to the generated SBOM file
