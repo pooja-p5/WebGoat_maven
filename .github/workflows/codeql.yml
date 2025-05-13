@@ -112,12 +112,4 @@ jobs:
         path: ${{ github.workspace }}/*.csv
         overwrite: true
 
-    - name: Generate SARIF
-      run: |
-       codeql database analyze my-database \
-       --format=sarifv2.1.0 --output=codeql-results.sarif
-
-    - name: Upload Code Scanning Results
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: codeql-results.sarif
+   
