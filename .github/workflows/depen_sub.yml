@@ -1,0 +1,30 @@
+name: Dependency Submission
+on:
+  push:
+    branches:
+      - main
+
+# The API requires write permission on the repository to submit dependencies
+permissions:
+  contents: write
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - java-version: 8
+            directory: .
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.java-version }}
+    - name: Submit Dependency Snapshot
+      uses: advanced-security/maven-dependency-submission-action@v3
+       with:
+        directory: ${{ matrix.directory }}
+        correlator: ${{ github.job }}-${{ matrix.directory }}
